@@ -1,0 +1,19 @@
+1. check if checksum is on:
+    mysql> SHOW VARIABLES LIKE '%checksum%'
+
+2. vim my.cnf:
+    innodb_file_per_table = 1
+
+
+
+algorithm:
+Stage 1:
+(segmented dump x 3)
+1.1. dump from `source` to `target`
+        foreach (group of report):
+            dump as single dumpfile
+
+
+Stage 2:
+2.1. check missing table `source` vs. `target`
+2.2. checksum `source` vs. `target`
