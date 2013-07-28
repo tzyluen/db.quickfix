@@ -8,18 +8,17 @@ my $that = shift(@ARGV);
 die "-E- $this undefined\n" unless -e $this;
 die "-E- $that undefined\n" unless -e $that;
 
-&readsum($this);
-&readsum($that);
-&verify();
+my $src = &readsum($this);
+my $dest = &readsum($that);
+&verify($src, $dest);
 
 sub readsum {
     my $f = shift;
     my $h = {};
-    open(FD, "<$f") or die $!;
-    while (<FD>) {
-        /(.+)|(.+)/;
-        print $1;
-        #$h->{$1} = $2;
+    open(my $FD, '<', "$f") or die $!;
+    while (my $l = <$FD>) {
+        $l =~ /([a-zA-Z._0-9]+)\|([0-9]+)/;
+        $h->{$1} = $2;
     }
     return $h;
 }
@@ -28,6 +27,11 @@ sub readsum {
 sub verify {
     my $src = shift;
     my $dest = shift;
-    &readsum($src);
-    &readsum($dest);
+
+    for my $t (sort keys %{$src}) {
+        if (exists $dest->{$t}) {
+            print "$t ";
+            print "$src->{$t} == $dest->{$t}\n";
+        }
+    }
 }
